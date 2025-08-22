@@ -19,5 +19,3 @@ server/pnpm-debug.log*
 Thumbs.db
 .vscode/
 .idea/
-
-messageController.js
