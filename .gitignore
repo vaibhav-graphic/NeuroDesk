@@ -1,0 +1,21 @@
+server/node_modules/
+server/dist/
+server/build/
+server/.env
+server/.env.local
+server/.env.*.local
+server/npm-debug.log*
+server/yarn-debug.log*
+server/yarn-error.log*
+server/pnpm-debug.log*
+
+# -------------------------
+# Common
+# -------------------------
+*.log
+*.out
+*.err
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
