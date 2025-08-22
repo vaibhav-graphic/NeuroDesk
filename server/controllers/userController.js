@@ -50,3 +50,13 @@ export const loginUser = async (req, res) => {
         res.status(500).json({succes: false, msg: 'Server error'});
     }
 }
+
+export const getUser = async (req, res) => {
+    try{
+        const user = req.user;
+        res.status(200).json({succes: true, user});
+    }
+    catch(error){
+        res.status(500).json({succes: false, msg: 'Server error'});
+    }
+}
