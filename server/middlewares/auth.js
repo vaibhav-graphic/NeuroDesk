@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import User from "../models/User";
+import User from "../models/User.js";
 
 export const protect = async (req, res, next) => {
     let token = req.headers.authorization;
@@ -10,14 +10,14 @@ export const protect = async (req, res, next) => {
 
         const user = await User.findById(userId);
 
-        if(user){
-            res.status(401).json({succes: false, msg: 'Not authorized, user not found'});
+        if(!user){
+            return res.status(401).json({success: false, msg: 'Not authorized, user not found'});
         }
 
         req.user = user;
         next();
     }
     catch(error){
-        res.status(401).json({succes: false, msg: 'Not authorized, token failed'});
+        return res.status(401).json({success: false, msg: 'Not authorized, token failed'});
     }
 }
