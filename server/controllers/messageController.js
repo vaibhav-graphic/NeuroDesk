@@ -3,6 +3,7 @@ import axios from "axios";
 import Chat from "../models/Chat.js";
 import User from "../models/User.js";
 import imagekit from "../configs/imageKit.js";
+import openai from "../configs/openai.js";
 
 export const textMessageController = async (req, res) => {
   try {
@@ -37,7 +38,7 @@ export const textMessageController = async (req, res) => {
 
     const reply = {
       ...choices[0].message,
-      timestamps: Date.now,
+      timestamps: Date.now(),
       isImage: false,
     };
     res.json({ success: true, reply });
@@ -50,7 +51,7 @@ export const textMessageController = async (req, res) => {
   }
 };
 
-export const imageMessageController = async () => {
+export const imageMessageController = async (req, res) => {
   try {
     const userId = req.user._id;
 
@@ -68,17 +69,15 @@ export const imageMessageController = async () => {
       role: "user",
       content: prompt,
       timestamps: Date.now(),
-      isImage: true,
+      isImage: false,
     });
 
     const encodedPrompt = encodeURIComponent(prompt);
 
-    const generatedImageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT}
-    /ik-genimg-prompt-${encodedPrompt}/NeuroDesk/${Date.now()}.png?tr=w-800,h-800`;
+    const generatedImageUrl = `${process.env.IMAGEKIT_URL_ENDPOINT}/ik-genimg-prompt-${encodedPrompt}/NeuroDesk/${Date.now()}.png?tr=w-800,h-800`;
 
     const aiImageResponse = await axios.get(generatedImageUrl, {
-      responseType: "arraybuffer",
-    });
+      responseType: "arraybuffer"});
 
     const base64Image = `data:image/png;base64,${Buffer.from(
       aiImageResponse.data,
@@ -99,7 +98,7 @@ export const imageMessageController = async () => {
         isPublished
     }
 
-    res.status(400).json({success: true, reply});
+    res.status(200).json({success: true, reply});
 
     chat.messages.push(reply);
     await chat.save();
