@@ -2,20 +2,20 @@ import Stripe from "stripe";
 import Transaction from "../models/Transaction.js";
 import User from "../models/User.js";
 
-export const stripWebhooks = async (request, responce) => {
+export const stripWebhooks = async (request, response) => {
   const stripe = new Stripe(process.env.STRIPE_WEBHOOK_SECRET);
   const sig = request.headers["stripe-signature"];
 
   let event;
 
   try {
-    event = strips.webhooks.constructEvent(
+    event = stripe.webhooks.constructEvent(
       request.body,
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
   } catch (error) {
-    return responce.status(400).send(`Webhook Error: ${error.message}`);
+    return response.status(400).send(`Webhook Error: ${error.message}`);
   }
 
   try {
@@ -43,7 +43,7 @@ export const stripWebhooks = async (request, responce) => {
           transaction.isPaid = true;
           await transaction.save();
         } else {
-          return responce.json({
+          return response.json({
             received: true,
             message: "Ignored event : Invalid app",
           });
@@ -57,9 +57,9 @@ export const stripWebhooks = async (request, responce) => {
         break;
     }
 
-    responce.json({received: true}  );
+    response.json({received: true}  );
   } catch (error) {
     console.error("Webhook processing error:", error);
-    responce.status(500).send("Internal Server Error");
+    response.status(500).send("Internal Server Error");
   }
 };
