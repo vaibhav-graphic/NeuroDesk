@@ -56,7 +56,7 @@ const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
 export const purchasePlan = async (req, res) => {
   try {
     const { planId } = req.body;
-    const userId = req.user_id;
+    const userId = req.user._id;
     const plan = plans.find((plan) => plan._id === planId);
 
     if (!plan) {

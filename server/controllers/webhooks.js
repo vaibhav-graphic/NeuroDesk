@@ -3,7 +3,7 @@ import Transaction from "../models/Transaction.js";
 import User from "../models/User.js";
 
 export const stripWebhooks = async (request, response) => {
-  const stripe = new Stripe(process.env.STRIPE_WEBHOOK_SECRET);
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY);
   const sig = request.headers["stripe-signature"];
 
   let event;
@@ -30,6 +30,7 @@ export const stripWebhooks = async (request, response) => {
         const { transactionId, appId } = session.metadata;
 
         if (appId === "NeuroDesk") {
+
           const transaction = await Transaction.findOne({
             _id: transactionId,
             isPaid: false,
