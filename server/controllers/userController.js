@@ -23,10 +23,12 @@ export const registerUser = async (req, res) => {
 
         const user = await User.create({name, email, password});
 
-        return res.status(200).json({succes: true, msg: 'User register succesfully'});
+        const token = generateToken(user._id);
+
+        return res.status(200).json({success: true, token});
     }
     catch(error){
-        return res.status(500).json({succes: false, msg: 'Server error'});
+        return res.status(500).json({success: false, msg: 'Server error'});
     }
 }
 
@@ -41,31 +43,31 @@ export const loginUser = async (req, res) => {
 
             if(isMatch){
                 const token = generateToken(user._id);
-                return res.status(200).send({succes: true, token});
+                return res.status(200).send({success: true, token});
             }
         }
 
-        return res.status(400).json({succes: false, msg: 'Invalid email or password'});
+        return res.status(400).json({success: false, msg: 'Invalid email or password'});
     }
     catch(error){
-        return res.status(500).json({succes: false, msg: 'Server error'});
+        return res.status(500).json({success: false, msg: 'Server error'});
     }
 }
 
 export const getUser = async (req, res) => {
     try{
         const user = req.user;
-        return res.status(200).json({succes: true, user});
+        return res.status(200).json({success: true, user});
     }
     catch(error){
-        return res.status(500).json({succes: false, msg: 'Server error'});
+        return res.status(500).json({success: false, msg: 'Server error'});
     }
 }
 
 export const getPublishedImage = async (req, res) => {
     try{
         const publishedImageMessages = await Chat.aggregate([
-            {$unwind: "$message"},
+            {$unwind: "$messages"},
             {
                 $match: {
                     "messages.isImage": true,
@@ -81,7 +83,7 @@ export const getPublishedImage = async (req, res) => {
             }
         ]);
 
-        res.status(200).json({success: true, images: publishedImageMessages});
+        res.status(200).json({success: true, images: publishedImageMessages.reverse()});
     }
     catch(error){
         res.status(400).json({success: false, msg: error.message});

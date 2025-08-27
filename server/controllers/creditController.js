@@ -45,9 +45,9 @@ const plans = [
 
 export const getPlans = async (req, res) => {
   try {
-    res.status(200).json({ succes: true, plans });
+    res.status(200).json({ success: true, plans });
   } catch (error) {
-    res.status(400).json({ succes: false, msg: error.message });
+    res.status(400).json({ success: false, msg: error.message });
   }
 };
 
@@ -60,7 +60,7 @@ export const purchasePlan = async (req, res) => {
     const plan = plans.find((plan) => plan._id === planId);
 
     if (!plan) {
-      return res.status(400).json({ succes: false, msg: "Invalid plan" });
+      return res.status(400).json({ success: false, msg: "Invalid plan" });
     }
 
     const transaction = await Transaction.create({
@@ -92,8 +92,8 @@ export const purchasePlan = async (req, res) => {
       expires_at: Math.floor(Date.now() / 1000 ) + 30 * 60
     });
 
-    res.status(200).json({succes: true, url: session.url});
+    res.status(200).json({success: true, url: session.url});
   } catch (error) {
-    res.status(400).json({succes: false, msg: error.message});
+    res.status(400).json({success: false, msg: error.message});
   }
 };
